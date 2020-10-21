@@ -82,7 +82,7 @@ public class ClientListener implements Runnable {
         return game;
     }
 
-    public void setChat(Game game) {
+    public void setGame(Game game) {
         this.game = game;
     }
     

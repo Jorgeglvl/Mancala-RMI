@@ -3,7 +3,9 @@ package client;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.IOException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -122,28 +124,55 @@ public class Home extends JFrame {
                 // TODO Auto-generated method stub
 
             }
-            
+
         });
 
         jb_get_connected.addActionListener(event -> getConnectedUsers());
+        jb_challange.addActionListener(event -> openGame());
     }
 
-    private void start(){
+    private void start() {
         this.pack();
         this.setVisible(true);
     }
 
-    private void getConnectedUsers(){
+    private void getConnectedUsers() {
         Utils.sendMessage(connection, "GET_CONNECTED_USERS");
         String response = Utils.receiveMessage(connection);
         jlist.removeAll();
         connected_users.clear();
-        for(String info : response.split(";")){
-            if(!info.equals(connection_info)){
+        for (String info : response.split(";")) {
+            if (!info.equals(connection_info)) {
                 connected_users.add(info);
             }
         }
         jlist.setListData(connected_users.toArray());
+    }
+
+    private void openGame() {
+        int index = jlist.getSelectedIndex();
+        if (index != -1) {
+            String connection_info = jlist.getSelectedValue().toString();
+            String[] splited = connection_info.split(":");
+            if (!opened_games.contains(connection_info)) {
+                try {
+                    Socket connection = new Socket(splited[1], Integer.parseInt(splited[2]));
+                    Utils.sendMessage(connection, "OPEN_GAME|" + this.connection_info);
+                    ClientListener cl = new ClientListener(this, connection);
+                    cl.setGame(new Game(this, connection, connection_info, this.connection_info.split(":")[0]));
+                    cl.setOpened(true);
+                    connected_listeners.put(connection_info, cl);
+                    opened_games.add(connection_info);
+                } catch (NumberFormatException e) {
+                    System.err.println("[Home:openGame] -> " + e.getMessage());
+                    e.printStackTrace();
+                } catch (UnknownHostException e) {
+                    System.err.println("[Home:openGame] -> " + e.getMessage());
+                } catch (IOException e) {
+                    System.err.println("[Home:openGame] -> " + e.getMessage());
+                }
+            }
+        }
     }
 
     public ArrayList<String> getOpened_games() {
