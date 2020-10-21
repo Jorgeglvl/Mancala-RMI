@@ -44,7 +44,7 @@ public class ClientListener implements Runnable {
                 }
                 running = false;
             } else {
-                String[] fields = message.split("|");
+                String[] fields = message.split(";");
                 if(fields.length > 1){
                     if(fields[0].equals("OPEN_GAME")){
                         String[] splited = fields[1].split(":");
@@ -53,8 +53,15 @@ public class ClientListener implements Runnable {
                             home.getOpened_games().add(connection_info);
                             home.getConnected_listeners().put(connection_info, this);
                             isOpened = true;
-                            game = new Game(home, connection, connection_info, home.getConnection_info());
+                            game = new Game(home, connection, connection_info, home.getConnection_info().split(":")[0]);
                         }
+                    } else if(fields[0].equals("MESSAGE")){
+                        String msg = "";
+                        for(int i=1;i<fields.length;i++){
+                            msg += fields[i];
+                            if(i>1) msg += ";";
+                        }
+                        game.append_message(msg);
                     }
                 }
             }

@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.*;
 
+import common.Utils;
+
 public class Game extends JFrame{
 
     private JLabel jl_title;
@@ -17,12 +19,14 @@ public class Game extends JFrame{
     private JScrollPane scroll;
 
     private Home home;
+    private String title;
     private Socket connection;
     private String connection_info;
     private ArrayList<String> message_list;
 
     public Game(Home home, Socket connection, String connection_info, String title){
         super("Mancala " + title);
+        this.title = title;
         this.connection_info = connection_info;
         this.home = home;
         this.connection = connection;
@@ -81,9 +85,58 @@ public class Game extends JFrame{
 
             }
         });
+
+        this.addWindowListener(new WindowListener() {
+
+            @Override
+            public void windowOpened(WindowEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                Utils.sendMessage(connection, "GAME_CLOSE");
+                home.getOpened_games().remove(connection_info);
+                home.getConnected_listeners().get(connection_info).setOpened(false);
+                home.getConnected_listeners().get(connection_info).setRunning(false);
+                home.getConnected_listeners().remove(connection_info);
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+            
+        });
     }
 
-    public void apend_message(String received){
+    public void append_message(String received){
         message_list.add(received);
         String message = "";
         for(String str : message_list){
@@ -95,7 +148,8 @@ public class Game extends JFrame{
     private void send(){
         if(jt_message.getText().length() > 0){
             SimpleDateFormat df = new SimpleDateFormat("hh:mm:ss");
-            apend_message("<b>[" + df.format(new Date()) + "] Voce: </b><i>" + jt_message.getText() + "</i><br>");
+            Utils.sendMessage(connection, "MESSAGE;" + "<b>[" + df.format(new Date()) + "] " + this.title + ": </b><i>" + jt_message.getText() + "</i><br>");
+            append_message("<b>[" + df.format(new Date()) + "] Voce: </b><i>" + jt_message.getText() + "</i><br>");
             jt_message.setText("");
         }
         

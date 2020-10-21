@@ -18,7 +18,6 @@ public class Utils {
 
     public static String receiveMessage(Socket connection){
         String response = null;
-
         try {
             ObjectInputStream input = new ObjectInputStream(connection.getInputStream());
             response = (String) input.readObject();

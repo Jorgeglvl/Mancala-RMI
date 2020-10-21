@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ public class Home extends JFrame {
     private ArrayList<String> connected_users;
     private String connection_info;
     private Socket connection;
+    private ServerSocket server;
+    private boolean running;
 
     private JLabel jl_title;
     private JButton jb_get_connected, jb_challange;
@@ -39,6 +42,8 @@ public class Home extends JFrame {
     }
 
     private void initComponents() {
+        server = null;
+        running = false;
         opened_games = new ArrayList<String>();
         connected_listeners = new HashMap<String, ClientListener>();
         connected_users = new ArrayList<String>();
@@ -91,6 +96,7 @@ public class Home extends JFrame {
 
             @Override
             public void windowClosing(WindowEvent e) {
+                running = false;
                 Utils.sendMessage(connection, "QUIT");
                 System.out.println("> Conexão encerrada");
             }
@@ -134,6 +140,7 @@ public class Home extends JFrame {
     private void start() {
         this.pack();
         this.setVisible(true);
+        this.startServer(this, Integer.parseInt(connection_info.split(":")[2]));
     }
 
     private void getConnectedUsers() {
@@ -157,12 +164,13 @@ public class Home extends JFrame {
             if (!opened_games.contains(connection_info)) {
                 try {
                     Socket connection = new Socket(splited[1], Integer.parseInt(splited[2]));
-                    Utils.sendMessage(connection, "OPEN_GAME|" + this.connection_info);
+                    Utils.sendMessage(connection, "OPEN_GAME;" + this.connection_info);
                     ClientListener cl = new ClientListener(this, connection);
                     cl.setGame(new Game(this, connection, connection_info, this.connection_info.split(":")[0]));
                     cl.setOpened(true);
                     connected_listeners.put(connection_info, cl);
                     opened_games.add(connection_info);
+                    new Thread(cl).start();
                 } catch (NumberFormatException e) {
                     System.err.println("[Home:openGame] -> " + e.getMessage());
                     e.printStackTrace();
@@ -173,6 +181,26 @@ public class Home extends JFrame {
                 }
             }
         }
+    }
+
+    private void startServer(Home home, int port){
+        new Thread(){
+            @Override
+            public void run(){
+                running = true;
+                try {
+                    server = new ServerSocket(port);
+                    System.out.println("Servidor cliente iniciado na porta " + port + "...");
+                    while(running){
+                        Socket connection = server.accept();
+                        ClientListener cl = new ClientListener(home, connection);
+                        new Thread(cl).start();
+                    }
+                } catch (Exception e) {
+                    System.err.println("[Home:startServer] -> " + e.getMessage());
+                }
+            }
+        } .start();
     }
 
     public ArrayList<String> getOpened_games() {
