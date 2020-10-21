@@ -5,6 +5,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.*;
 
@@ -12,6 +14,8 @@ import common.Utils;
 
 public class Home extends JFrame {
 
+    private ArrayList<String> opened_games;
+    private Map<String, ClientListener> connected_listeners;
     private ArrayList<String> connected_users;
     private String connection_info;
     private Socket connection;
@@ -33,6 +37,8 @@ public class Home extends JFrame {
     }
 
     private void initComponents() {
+        opened_games = new ArrayList<String>();
+        connected_listeners = new HashMap<String, ClientListener>();
         connected_users = new ArrayList<String>();
         jl_title = new JLabel("<Usuario: " + connection_info.split(":")[0] + ">", SwingConstants.CENTER);
         jb_get_connected = new JButton("Atualizar Lista");
@@ -139,4 +145,17 @@ public class Home extends JFrame {
         }
         jlist.setListData(connected_users.toArray());
     }
+
+    public ArrayList<String> getOpened_games() {
+        return opened_games;
+    }
+
+    public Map<String, ClientListener> getConnected_listeners() {
+        return connected_listeners;
+    }
+
+    public String getConnection_info() {
+        return connection_info;
+    }
+    
 }

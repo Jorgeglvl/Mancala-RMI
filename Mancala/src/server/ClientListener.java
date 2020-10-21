@@ -38,8 +38,7 @@ public class ClientListener implements Runnable {
                 try {
                     connection.close();
                 } catch (IOException e) {
-                    System.out.println("[ClientListener:Run] -> " + e.getMessage());
-                    e.printStackTrace();
+                    System.err.println("[ClientListener:Run] -> " + e.getMessage());
                 }
                 running = false; 
             } else if(message.equals("GET_CONNECTED_USERS")){
