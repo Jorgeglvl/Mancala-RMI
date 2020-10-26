@@ -12,7 +12,7 @@ public class ClientListener implements Runnable {
     private Home home;
     private Socket connection;
     private String connection_info;
-    private Game game;
+    private Chat chat;
 
     public ClientListener(Home home, Socket connection) {
         this.running = false;
@@ -20,7 +20,7 @@ public class ClientListener implements Runnable {
         this.home = home;
         this.connection = connection;
         this.connection_info = null;
-        this.game = null;
+        this.chat = null;
 
     }
 
@@ -40,7 +40,7 @@ public class ClientListener implements Runnable {
                     } catch (IOException e) {
                         System.err.println("[ClientListener:Run] -> " + e.getMessage());
                     }
-                    game.dispose();
+                    chat.dispose();
                 }
                 running = false;
             } else {
@@ -53,7 +53,7 @@ public class ClientListener implements Runnable {
                             home.getOpened_games().add(connection_info);
                             home.getConnected_listeners().put(connection_info, this);
                             isOpened = true;
-                            game = new Game(home, connection, connection_info, home.getConnection_info().split(":")[0]);
+                            chat = new Chat(home, connection, connection_info, home.getConnection_info().split(":")[0]);
                         }
                     } else if(fields[0].equals("MESSAGE")){
                         String msg = "";
@@ -61,7 +61,7 @@ public class ClientListener implements Runnable {
                             msg += fields[i];
                             if(i>1) msg += ";";
                         }
-                        game.append_message(msg);
+                        chat.append_message(msg);
                     }
                 }
             }
@@ -85,12 +85,12 @@ public class ClientListener implements Runnable {
         this.isOpened = isOpened;
     }
 
-    public Game getChat() {
-        return game;
+    public Chat getChat() {
+        return chat;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setChat(Chat chat) {
+        this.chat = chat;
     }
     
 }
