@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +37,8 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener{
 		this.addKeyListener(this);
 		this.addMouseListener(this);
 		try {
-			PLAYER_SPRITE = ImageIO.read(getClass().getResource("player.png"));
-			OPONENTE_SPRITE = ImageIO.read(getClass().getResource("oponente.png"));
+			PLAYER_SPRITE = ImageIO.read(new File("Mancala/res/player.png"));
+			OPONENTE_SPRITE = ImageIO.read(new File("Mancala/res/oponente.png"));
 		} catch (IOException e) {
             System.err.println("[Game:Game] -> " + e.getMessage());
 			e.printStackTrace();
