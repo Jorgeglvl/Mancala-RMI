@@ -91,7 +91,6 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
                 if (TABULEIRO[mouse_x][mouse_y] > 0) {
 
                     for(int i = TABULEIRO[mouse_x][mouse_y]; i > 0 ; i--){
-
                     }
 
                     TABULEIRO[mouse_x][mouse_y] = 0;
