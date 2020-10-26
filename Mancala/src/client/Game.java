@@ -27,7 +27,7 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener{
 	public BufferedImage PLAYER_SPRITE,OPONENTE_SPRITE;
 	public static int[][] TABULEIRO = new int[3][3];
 	
-	public static int mx,my;
+	public static int mouse_x,mouse_y;
 
 	public boolean pressed = false;
 	public static int turns = 0;
@@ -54,13 +54,8 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener{
 		}
 	}
 	
-	public int checkVictory() {
-		
-		
-		
-		//Oponente
-		
-		//Verificar se o player ganhou
+	public int checkVictory() {		
+		//Verificar se o OPONENTE ganhou
 		if(TABULEIRO[0][0] == OPONENTE && TABULEIRO[1][0] == OPONENTE && TABULEIRO[2][0] == OPONENTE) {
 			//O player ganhou
 			return OPONENTE;
@@ -146,9 +141,7 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener{
 					curScore++;
 				}
 			}
-		}
-		
-		
+		}		
 		
 		if(curScore == TABULEIRO.length * TABULEIRO[0].length) {
 			return 0;
@@ -163,26 +156,24 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener{
 			
 			if(pressed) {
 				pressed = false;
-				mx/=100;
-				my/=100;
-				if(TABULEIRO[mx][my] == 0) {
-				TABULEIRO[mx][my] = PLAYER;
-				CURRENT = OPONENTE;
+				mouse_x/=100;
+				mouse_y/=100;
+				if(TABULEIRO[mouse_x][mouse_y] == 0) {
+					TABULEIRO[mouse_x][mouse_y] = PLAYER;
+					CURRENT = OPONENTE;
 				}
-			}
-			
+			}			
 
 		}else if(CURRENT == OPONENTE){
-			for(int xx = 0; xx < TABULEIRO.length; xx++) {
-				for(int yy = 0; yy < TABULEIRO.length; yy++) {
-					if(TABULEIRO[xx][yy] == 0) {
-						CURRENT = PLAYER;
-						return;
-					}
+			if(pressed) {
+				pressed = false;
+				mouse_x/=100;
+				mouse_y/=100;
+				if(TABULEIRO[mouse_x][mouse_y] == 0) {
+					TABULEIRO[mouse_x][mouse_y] = OPONENTE;
+					CURRENT = PLAYER;
 				}
-			}
-
-			
+			}			
 		}
 		
 		if(checkVictory() == PLAYER) {
@@ -274,8 +265,8 @@ public class Game extends Canvas implements Runnable,KeyListener,MouseListener{
 	@Override
 	public void mousePressed(MouseEvent e) {
 		pressed = true;
-		mx = e.getX();
-		my = e.getY();
+		mouse_x = e.getX();
+		mouse_y = e.getY();
 		
 	}
 
