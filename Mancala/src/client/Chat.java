@@ -25,7 +25,7 @@ public class Chat extends JFrame{
     private ArrayList<String> message_list;
 
     public Chat(Home home, Socket connection, String connection_info, String title){
-        super("Mancala " + title);
+        super("Chat " + title);
         this.title = title;
         this.connection_info = connection_info;
         this.home = home;
