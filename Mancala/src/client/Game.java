@@ -188,9 +188,12 @@ public class Game extends JFrame {
 
             for (int i = 1; i <= board_aux_1[index]; i++) {
                 index_aux = index - i;
-                if (index_aux < 0) {
+                if (index_aux > -7 && index_aux < 0) {
                     board_aux_2[index_aux + 7]++;
                 } else {
+                    if(index_aux < -6){
+                        index_aux += 13;
+                    }
                     // verifica captura.
                     if (i == board_aux_1[index] && board_aux_1[index_aux] == 0 && index_aux != 0 && board_aux_2[7 - index_aux] != 0) {
                         int soma = 1;
