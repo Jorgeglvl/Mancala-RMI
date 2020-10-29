@@ -453,7 +453,6 @@ public class Game extends JFrame {
 
             String e_board = Utils.boardToString(this.player_board);
             Utils.sendMessage(connection, "GAME_COMMAND_ATT_PLAYER;"  + e_board);
-
         }
 
     }
@@ -480,12 +479,12 @@ public class Game extends JFrame {
         this.currentTurn = currentTurn;
     }
 
-    public JLabel getJl_currentTurn() {
-        return jl_currentTurn;
-    }
+	public JLabel getJl_currentTurn() {
+		return jl_currentTurn;
+	}
 
-    public void setJl_currentTurn(JLabel jl_currentTurn) {
-        this.jl_currentTurn = jl_currentTurn;
-    }
+	public void setJl_currentTurn(JLabel jl_currentTurn) {
+		this.jl_currentTurn = jl_currentTurn;
+	}
 
 }

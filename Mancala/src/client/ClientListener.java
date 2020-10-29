@@ -61,8 +61,7 @@ public class ClientListener implements Runnable {
                             chat = new Chat(home, connection, connection_info, home.getConnection_info().split(":")[0]);
                             game =new Game(home, connection, connection_info, home.getConnection_info().split(":")[0], false);
                         }
-                    } 
-                    //criar resgras como essa para o game
+                    }
                     else if(fields[0].equals("MESSAGE")){
                         String msg = "";
                         for(int i=1;i<fields.length;i++){
@@ -70,8 +69,7 @@ public class ClientListener implements Runnable {
                             if(i>1) msg += ";";
                         }
                         chat.append_message(msg);
-                    }
-                    //-----------------------------------                     
+                    }                    
                     else if(fields[0].equals("GAME_COMMAND_ATT_PLAYER")){
                         String msg = "";
                         for(int i=1;i<fields.length;i++){
@@ -108,7 +106,6 @@ public class ClientListener implements Runnable {
                     }
                 }
             }
-            System.out.println("Mensagem: " + message);
         }
     }
 

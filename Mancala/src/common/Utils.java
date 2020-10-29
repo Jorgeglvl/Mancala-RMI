@@ -30,9 +30,7 @@ public class Utils {
         return response;
     }
 
-    // Função que converte uma matriz de int (tabuleiro) para um vetor de char
-    // (Strings) separando os valores contidos
-    // nela com "-"
+    // Converte um array de int (board) para String, separando por "-"
     public static String boardToString(int[] board) {
 
         String string = "";
@@ -44,9 +42,7 @@ public class Utils {
         return string;
     }
 
-    // Função que converte uma String para uma matriz de int, o "-" separa os int
-    // inteiros que estão contigos dentro da
-    // String
+    // Converte uma String de inteiros separados por "-" para uma matriz de int
     public static int[] stringToBoard(String string) {
 
         int[] board = new int[7];
