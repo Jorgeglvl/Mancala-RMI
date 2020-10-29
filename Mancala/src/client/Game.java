@@ -44,14 +44,12 @@ public class Game extends JFrame {
     private final static int PLAYER_TURN = 1;
     private final static int ENEMY_TURN = 0;
 
-    // public Game(Home home, Socket connection, String connection_info, String
-    // title){
-    public Game(boolean player_type) {
-        // super("Mancala " + title);
-        // this.title = title;
-        // this.connection_info = connection_info;
-        // this.home = home;
-        // this.connection = connection;
+    public Game(Home home, Socket connection, String connection_info, String title, boolean player_type){
+        super("Mancala " + title);
+        this.title = title;
+        this.connection_info = connection_info;
+        this.home = home;
+        this.connection = connection;
         this.player_type = player_type;
         initComponents();
         configComponents();
@@ -107,6 +105,55 @@ public class Game extends JFrame {
         restart.addActionListener(event -> resetBoard());
         desistir.addActionListener(event -> onGiveUp(this.player_type));
 
+        this.addWindowListener(new WindowListener() {
+
+            @Override
+            public void windowOpened(WindowEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                Utils.sendMessage(connection, "GAME_CLOSE");
+                home.getOpened_games().remove(connection_info);
+                home.getConnected_listeners().get(connection_info).setOpened(false);
+                home.getConnected_listeners().get(connection_info).setRunning(false);
+                home.getConnected_listeners().remove(connection_info);
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+            
+        });
+
     }
 
     private void resetBoard() {
@@ -117,10 +164,11 @@ public class Game extends JFrame {
         player_board[0] = 0;
         enemy_board[0] = 0;
         this.currentTurn = 1;
-        jl_currentTurn.setText("Turno do Player 1");
+        this.jl_currentTurn.setText("Turno do Player 1");
 
-        refreshButtons();
-        // enviar mensagem para resetar tabuleiro via socket??
+        refreshButtons(false);
+        refreshTurns();
+        refreshLabels();
     }
 
     private void makeMove(int index, Boolean player_type) {
@@ -162,11 +210,11 @@ public class Game extends JFrame {
             if(!(index == board_aux_1[index])){
                 if(this.currentTurn == 1){
                     this.currentTurn = 0;
-                    jl_currentTurn.setText("Turno do Player 2");
+                    this.jl_currentTurn.setText("Turno do Player 2");
                 } 
                 else if(this.currentTurn == 0){
                     this.currentTurn = 1;
-                    jl_currentTurn.setText("Turno do Player 1");
+                    this.jl_currentTurn.setText("Turno do Player 1");
                 }
             }
             board_aux_1[index] = 0;
@@ -179,7 +227,7 @@ public class Game extends JFrame {
                 player_board = board_aux_2;
             }
 
-            refreshButtons();
+            refreshButtons(false);
             if (verifyGameOver()) {
                 String message = "";
                 if (player_board[0] > enemy_board[0]) {
@@ -193,6 +241,8 @@ public class Game extends JFrame {
 
                 this.jl_currentTurn.setText(message + "");
             }
+            refreshLabels();
+            refreshTurns();
         }
 
     }
@@ -214,14 +264,17 @@ public class Game extends JFrame {
 
     private void onGiveUp(boolean player_type) {
         if (player_type) {
-            jl_currentTurn.setText("O Player 1 desistiu...");
+            this.jl_currentTurn.setText("O Player 1 desistiu...");
         }
 
         if (!player_type) {
-            jl_currentTurn.setText("O Player 2 desistiu...");
+            this.jl_currentTurn.setText("O Player 2 desistiu...");
         }
 
         this.currentTurn = -1;
+
+        refreshTurns();
+        refreshLabels();
 
     }
 
@@ -376,7 +429,7 @@ public class Game extends JFrame {
 
     }
 
-    public void refreshButtons() {
+    public void refreshButtons(boolean fromMessage) {
 
         buttonP1.setText(player_board[1] + "");
         buttonP2.setText(player_board[2] + "");
@@ -394,6 +447,45 @@ public class Game extends JFrame {
         player_score.setText(player_board[0] + "");
         enemy_score.setText(enemy_board[0] + "");
 
+        if(!fromMessage){
+            String p_board = Utils.boardToString(this.enemy_board);
+            Utils.sendMessage(connection, "GAME_COMMAND_ATT_ENEMY;"  + p_board);
+
+            String e_board = Utils.boardToString(this.player_board);
+            Utils.sendMessage(connection, "GAME_COMMAND_ATT_PLAYER;"  + e_board);
+
+        }
+
+    }
+
+    private void refreshLabels(){
+        Utils.sendMessage(connection, "GAME_COMMAND_ATT_LABELS;"  + this.jl_currentTurn.getText());
+
+    }
+
+    private void refreshTurns(){
+        String turno = Integer.toString(this.currentTurn);
+        Utils.sendMessage(connection, "GAME_COMMAND_ATT_TURN;"  + turno);
+    }
+
+    public void setPlayer_board(int[] player_board) {
+        this.player_board = player_board;
+    }
+
+    public void setEnemy_board(int[] enemy_board) {
+        this.enemy_board = enemy_board;
+    }
+
+    public void setCurrentTurn(int currentTurn) {
+        this.currentTurn = currentTurn;
+    }
+
+    public JLabel getJl_currentTurn() {
+        return jl_currentTurn;
+    }
+
+    public void setJl_currentTurn(JLabel jl_currentTurn) {
+        this.jl_currentTurn = jl_currentTurn;
     }
 
 }

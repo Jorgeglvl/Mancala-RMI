@@ -167,7 +167,7 @@ public class Home extends JFrame {
                     Utils.sendMessage(connection, "OPEN_GAME;" + this.connection_info);
                     ClientListener cl = new ClientListener(this, connection);
                     cl.setChat(new Chat(this, connection, connection_info, this.connection_info.split(":")[0]));
-                    cl.setGame(new Game(true));
+                    cl.setGame(new Game(this, connection, connection_info, this.connection_info.split(":")[0], true));
                     cl.setOpened(true);
                     connected_listeners.put(connection_info, cl);
                     opened_games.add(connection_info);

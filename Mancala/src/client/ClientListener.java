@@ -3,6 +3,8 @@ package client;
 import java.io.IOException;
 import java.net.Socket;
 
+import javax.print.DocFlavor.STRING;
+
 import common.Utils;
 
 public class ClientListener implements Runnable {
@@ -57,7 +59,7 @@ public class ClientListener implements Runnable {
                             home.getConnected_listeners().put(connection_info, this);
                             isOpened = true;
                             chat = new Chat(home, connection, connection_info, home.getConnection_info().split(":")[0]);
-                            game =new Game(false);
+                            game =new Game(home, connection, connection_info, home.getConnection_info().split(":")[0], false);
                         }
                     } 
                     //criar resgras como essa para o game
@@ -69,7 +71,41 @@ public class ClientListener implements Runnable {
                         }
                         chat.append_message(msg);
                     }
-                    //-----------------------------------
+                    //-----------------------------------                     
+                    else if(fields[0].equals("GAME_COMMAND_ATT_PLAYER")){
+                        String msg = "";
+                        for(int i=1;i<fields.length;i++){
+                            msg += fields[i];
+                            if(i>1) msg += ";";
+                        }
+                        game.setPlayer_board(Utils.stringToBoard(msg));
+                        game.refreshButtons(true);
+                    }
+                    else if(fields[0].equals("GAME_COMMAND_ATT_ENEMY")){
+                        String msg = "";
+                        for(int i=1;i<fields.length;i++){
+                            msg += fields[i];
+                            if(i>1) msg += ";";
+                        }
+                        game.setEnemy_board(Utils.stringToBoard(msg));
+                        game.refreshButtons(true);
+                    }
+                    else if(fields[0].equals("GAME_COMMAND_ATT_TURN")){
+                        String msg = "";
+                        for(int i=1;i<fields.length;i++){
+                            msg += fields[i];
+                            if(i>1) msg += ";";
+                        }
+                        game.setCurrentTurn(Integer.parseInt(msg));
+                    }
+                    else if(fields[0].equals("GAME_COMMAND_ATT_LABELS")){
+                        String msg = "";
+                        for(int i=1;i<fields.length;i++){
+                            msg += fields[i];
+                            if(i>1) msg += ";";
+                        }
+                        game.getJl_currentTurn().setText(msg);
+                    }
                 }
             }
             System.out.println("Mensagem: " + message);
