@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JOptionPane;
+
 import common.Utils;
 
 public class Server {
@@ -20,7 +22,8 @@ public class Server {
             String connection_info;
             clients = new HashMap<String, ClientListener>();
             server = new ServerSocket(PORT);
-            System.out.println("Servidor iniciado no host:" + HOST + " e porta:" + PORT);
+            JOptionPane.showMessageDialog(null,
+            "Servidor iniciado no host:" + HOST + " e porta:" + PORT);
             while(true){
                 Socket connection = server.accept();
                 connection_info = Utils.receiveMessage(connection);
@@ -34,7 +37,10 @@ public class Server {
                 }
             }
         } catch (IOException e) {
-            System.err.println("[ERROR:Server] -> " + e.getMessage());
+            JOptionPane.showMessageDialog(null,
+            e.getMessage(),
+            "Inane error",
+            JOptionPane.ERROR_MESSAGE);
         }
     }
 
