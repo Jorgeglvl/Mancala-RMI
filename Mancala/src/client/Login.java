@@ -34,7 +34,7 @@ class Login extends JFrame{
         jt_port = new JTextField();
 
         jl_title.setBounds(10, 10, 375, 100);
-        ImageIcon icon = new ImageIcon("Mancala/res/logo.png");
+        ImageIcon icon = new ImageIcon(getClass().getResource("/logo.png"));
         jl_title.setIcon(new ImageIcon(icon.getImage().getScaledInstance(365, 100,  Image.SCALE_SMOOTH)));
 
         jb_login.setBounds(10, 220, 375, 40);

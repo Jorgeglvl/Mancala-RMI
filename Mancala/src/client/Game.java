@@ -72,7 +72,7 @@ public class Game extends JFrame {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         planoDeFundo.setBounds(0, 0, 1024, 648);
-        planoDeFundo.setIcon(new ImageIcon("Mancala/res/Mancala.png"));
+		planoDeFundo.setIcon(new ImageIcon(getClass().getResource("/Mancala.png")));
 
         resetBoard();
     }
