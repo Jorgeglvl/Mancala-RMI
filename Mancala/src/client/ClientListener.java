@@ -13,6 +13,7 @@ public class ClientListener implements Runnable {
     private Socket connection;
     private String connection_info;
     private Chat chat;
+    private Game game;
 
     public ClientListener(Home home, Socket connection) {
         this.running = false;
@@ -21,6 +22,7 @@ public class ClientListener implements Runnable {
         this.connection = connection;
         this.connection_info = null;
         this.chat = null;
+        this.game = null;
 
     }
 
@@ -41,6 +43,7 @@ public class ClientListener implements Runnable {
                         System.err.println("[ClientListener:Run] -> " + e.getMessage());
                     }
                     chat.dispose();
+                    game.dispose();
                 }
                 running = false;
             } else {
@@ -54,8 +57,11 @@ public class ClientListener implements Runnable {
                             home.getConnected_listeners().put(connection_info, this);
                             isOpened = true;
                             chat = new Chat(home, connection, connection_info, home.getConnection_info().split(":")[0]);
+                            game =new Game(false);
                         }
-                    } else if(fields[0].equals("MESSAGE")){
+                    } 
+                    //criar resgras como essa para o game
+                    else if(fields[0].equals("MESSAGE")){
                         String msg = "";
                         for(int i=1;i<fields.length;i++){
                             msg += fields[i];
@@ -63,6 +69,7 @@ public class ClientListener implements Runnable {
                         }
                         chat.append_message(msg);
                     }
+                    //-----------------------------------
                 }
             }
             System.out.println("Mensagem: " + message);
@@ -91,6 +98,14 @@ public class ClientListener implements Runnable {
 
     public void setChat(Chat chat) {
         this.chat = chat;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
     
 }
