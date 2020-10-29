@@ -230,8 +230,13 @@ public class Game extends JFrame {
                 player_board = board_aux_2;
             }
 
-            refreshButtons(false);
             if (verifyGameOver()) {
+                for (int i = 1; i < 7; i++) {
+                    player_board[0] += player_board[i];
+                    player_board[i] = 0;
+                    enemy_board[0] += enemy_board[i];
+                    enemy_board[i] = 0;
+                }
                 String message = "";
                 if (player_board[0] > enemy_board[0]) {
                     message = "Player 1 é o vencedor";
@@ -244,6 +249,8 @@ public class Game extends JFrame {
 
                 this.jl_currentTurn.setText(message + "");
             }
+
+            refreshButtons(false);
             refreshLabels();
             refreshTurns();
         }
