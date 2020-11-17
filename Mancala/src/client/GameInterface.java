@@ -3,13 +3,14 @@ package client;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.Socket;
+import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.*;
 
 import common.Utils;
 
-public class Game extends JFrame {
+public class GameInterface extends JFrame {
 
     private int[] player_board, enemy_board;
     private int currentTurn;
@@ -34,23 +35,17 @@ public class Game extends JFrame {
     private JLabel planoDeFundo;
     private JLabel jl_currentTurn;
 
-    private Home home;
-    private String title;
-    private Socket connection;
-    private String connection_info;
+    private Player player;
 
     public boolean player_type;
 
     private final static int PLAYER_TURN = 1;
     private final static int ENEMY_TURN = 0;
 
-    public Game(Home home, Socket connection, String connection_info, String title, boolean player_type){
-        super("Mancala " + title);
-        this.title = title;
-        this.connection_info = connection_info;
-        this.home = home;
-        this.connection = connection;
+    public GameInterface(Player player, boolean player_type) throws RemoteException {
+        super("Mancala");
         this.player_type = player_type;
+        this.player = player;
         initComponents();
         configComponents();
         insertComponents();
@@ -66,13 +61,13 @@ public class Game extends JFrame {
         initLabels();
     }
 
-    private void configComponents() {
+    private void configComponents() throws RemoteException {
         this.setMinimumSize(new Dimension(1025, 680));
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         planoDeFundo.setBounds(0, 0, 1024, 648);
-		planoDeFundo.setIcon(new ImageIcon(getClass().getResource("/Mancala.png")));
+        planoDeFundo.setIcon(new ImageIcon(getClass().getResource("/Mancala.png")));
 
         resetBoard();
     }
@@ -85,24 +80,115 @@ public class Game extends JFrame {
     private void insertActions() {
 
         if (this.player_type) {
-            buttonP1.addActionListener(event -> makeMove(1, this.player_type));
-            buttonP2.addActionListener(event -> makeMove(2, this.player_type));
-            buttonP3.addActionListener(event -> makeMove(3, this.player_type));
-            buttonP4.addActionListener(event -> makeMove(4, this.player_type));
-            buttonP5.addActionListener(event -> makeMove(5, this.player_type));
-            buttonP6.addActionListener(event -> makeMove(6, this.player_type));
+            buttonP1.addActionListener(event -> {
+                try {
+                    makeMove(1, this.player_type);
+                } catch (RemoteException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            });
+            buttonP2.addActionListener(event -> {
+                try {
+                    makeMove(2, this.player_type);
+                } catch (RemoteException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            });
+            buttonP3.addActionListener(event -> {
+                try {
+                    makeMove(3, this.player_type);
+                } catch (RemoteException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            });
+            buttonP4.addActionListener(event -> {
+                try {
+                    makeMove(4, this.player_type);
+                } catch (RemoteException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            });
+            buttonP5.addActionListener(event -> {
+                try {
+                    makeMove(5, this.player_type);
+                } catch (RemoteException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            });
+            buttonP6.addActionListener(event -> {
+                try {
+                    makeMove(6, this.player_type);
+                } catch (RemoteException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            });
         }
 
         if (!this.player_type) {
-            buttonE6.addActionListener(event -> makeMove(6, this.player_type));
-            buttonE1.addActionListener(event -> makeMove(5, this.player_type));
-            buttonE2.addActionListener(event -> makeMove(4, this.player_type));
-            buttonE3.addActionListener(event -> makeMove(3, this.player_type));
-            buttonE4.addActionListener(event -> makeMove(2, this.player_type));
-            buttonE5.addActionListener(event -> makeMove(1, this.player_type));
+            buttonE6.addActionListener(event -> {
+                try {
+                    makeMove(6, this.player_type);
+                } catch (RemoteException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            });
+            buttonE1.addActionListener(event -> {
+                try {
+                    makeMove(5, this.player_type);
+                } catch (RemoteException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            });
+            buttonE2.addActionListener(event -> {
+                try {
+                    makeMove(4, this.player_type);
+                } catch (RemoteException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            });
+            buttonE3.addActionListener(event -> {
+                try {
+                    makeMove(3, this.player_type);
+                } catch (RemoteException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            });
+            buttonE4.addActionListener(event -> {
+                try {
+                    makeMove(2, this.player_type);
+                } catch (RemoteException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            });
+            buttonE5.addActionListener(event -> {
+                try {
+                    makeMove(1, this.player_type);
+                } catch (RemoteException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            });
         }
 
-        restart.addActionListener(event -> resetBoard());
+        restart.addActionListener(event -> {
+            try {
+                resetBoard();
+            } catch (RemoteException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        });
         desistir.addActionListener(event -> onGiveUp(this.player_type));
 
         this.addWindowListener(new WindowListener() {
@@ -115,11 +201,11 @@ public class Game extends JFrame {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                Utils.sendMessage(connection, "GAME_CLOSE");
-                home.getOpened_games().remove(connection_info);
-                home.getConnected_listeners().get(connection_info).setOpened(false);
-                home.getConnected_listeners().get(connection_info).setRunning(false);
-                home.getConnected_listeners().remove(connection_info);
+                // Utils.sendMessage(connection, "GAME_CLOSE");
+                // home.getOpened_games().remove(connection_info);
+                // home.getConnected_listeners().get(connection_info).setOpened(false);
+                // home.getConnected_listeners().get(connection_info).setRunning(false);
+                // home.getConnected_listeners().remove(connection_info);
             }
 
             @Override
@@ -151,12 +237,12 @@ public class Game extends JFrame {
                 // TODO Auto-generated method stub
 
             }
-            
+
         });
 
     }
 
-    private void resetBoard() {
+    private void resetBoard() throws RemoteException {
         for (int i = 1; i < player_board.length; i++) {
             player_board[i] = 4;
             enemy_board[i] = 4;
@@ -171,7 +257,7 @@ public class Game extends JFrame {
         refreshLabels();
     }
 
-    private void makeMove(int index, Boolean player_type) {
+    private void makeMove(int index, Boolean player_type) throws RemoteException {
 
         if ((this.currentTurn == 1 && player_type) || (this.currentTurn == 0 && !player_type)) {
             int index_aux;
@@ -439,7 +525,7 @@ public class Game extends JFrame {
 
     }
 
-    public void refreshButtons(boolean fromMessage) {
+    public void refreshButtons(boolean fromRemote) throws RemoteException {
 
         buttonP1.setText(player_board[1] + "");
         buttonP2.setText(player_board[2] + "");
@@ -457,24 +543,20 @@ public class Game extends JFrame {
         player_score.setText(player_board[0] + "");
         enemy_score.setText(enemy_board[0] + "");
 
-        if(!fromMessage){
-            String p_board = Utils.boardToString(this.enemy_board);
-            Utils.sendMessage(connection, "GAME_COMMAND_ATT_ENEMY;"  + p_board);
-
-            String e_board = Utils.boardToString(this.player_board);
-            Utils.sendMessage(connection, "GAME_COMMAND_ATT_PLAYER;"  + e_board);
+        if (!fromRemote) {
+            this.player.setBoards(this.player_board, this.enemy_board, false); 
         }
 
     }
 
     private void refreshLabels(){
-        Utils.sendMessage(connection, "GAME_COMMAND_ATT_LABELS;"  + this.jl_currentTurn.getText());
+        //Utils.sendMessage(connection, "GAME_COMMAND_ATT_LABELS;"  + this.jl_currentTurn.getText());
 
     }
 
     private void refreshTurns(){
         String turno = Integer.toString(this.currentTurn);
-        Utils.sendMessage(connection, "GAME_COMMAND_ATT_TURN;"  + turno);
+        //Utils.sendMessage(connection, "GAME_COMMAND_ATT_TURN;"  + turno);
     }
 
     public void setPlayer_board(int[] player_board) {
@@ -493,8 +575,15 @@ public class Game extends JFrame {
 		return jl_currentTurn;
 	}
 
-	public void setJl_currentTurn(JLabel jl_currentTurn) {
-		this.jl_currentTurn = jl_currentTurn;
+	public void setJl_currentTurn(int currentTurn) {
+        if (currentTurn == 1) {
+            this.jl_currentTurn.setText("Vez do player 1");
+        }else if (currentTurn == 0) {
+            this.jl_currentTurn.setText("Vez do player 2");
+        } else{
+            this.jl_currentTurn.setText("Fim do jogo");
+        }
+		
 	}
 
 }
