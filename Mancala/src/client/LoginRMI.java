@@ -14,7 +14,8 @@ public class LoginRMI extends JFrame {
 
     private JButton jb_login;
     private JLabel jl_user, jl_port, jl_title;
-    private JTextField jt_user, jt_port;
+    private JTextField jt_ip, jt_port;
+	private Player player;
 
     public LoginRMI() throws IOException {
         super("login");
@@ -30,8 +31,8 @@ public class LoginRMI extends JFrame {
         jl_user = new JLabel("Ip", SwingConstants.CENTER);
         jl_port = new JLabel("Porta", SwingConstants.CENTER);
         jl_title = new JLabel("");
-        jt_user = new JTextField();
-        jt_port = new JTextField();
+        jt_ip = new JTextField("127.0.0.1");
+        jt_port = new JTextField("4444");
 
         jl_title.setBounds(10, 10, 375, 100);
         ImageIcon icon = new ImageIcon(getClass().getResource("/logo.png"));
@@ -48,7 +49,7 @@ public class LoginRMI extends JFrame {
         jl_port.setForeground(Color.ORANGE);
 
 
-        jt_user.setBounds(120, 120, 265, 40);
+        jt_ip.setBounds(120, 120, 265, 40);
         jt_port.setBounds(120, 170, 265, 40);
     }
 
@@ -65,23 +66,23 @@ public class LoginRMI extends JFrame {
         this.add(jl_user);
         this.add(jl_port);
         this.add(jl_title);
-        this.add(jt_user);
+        this.add(jt_ip);
         this.add(jt_port);
 
     } 
     
     private void insertActions() throws IOException {
         jb_login.addActionListener(event -> {
-            String ip = jt_user.getText();
-            jt_user.setText("");
+            String ip = jt_ip.getText();
+            jt_ip.setText("127.0.0.1");
             int port = Integer.parseInt(jt_port.getText());
-            jt_port.setText("");
+            jt_port.setText("4444");
 
             int[] player_board = new int[7];
             int[] enemy_board = new int[7];
 
             try {
-                new GameRMI(player_board, enemy_board);
+                new Player(player_board, enemy_board, ip, port);
                 this.dispose();
             } catch (RemoteException e) {
                 // TODO Auto-generated catch block
