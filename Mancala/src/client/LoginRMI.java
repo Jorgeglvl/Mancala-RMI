@@ -78,16 +78,13 @@ public class LoginRMI extends JFrame {
             int port = Integer.parseInt(jt_port.getText());
             jt_port.setText("4444");
 
-            int[] player_board = new int[7];
-            int[] enemy_board = new int[7];
-
             try {
-                new Player(player_board, enemy_board, ip, port);
-                this.dispose();
+                new Player(ip, port);
             } catch (RemoteException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            }            
+            }
+            this.dispose();
         });
     }
 
