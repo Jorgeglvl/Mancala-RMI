@@ -6,14 +6,17 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
+import javax.swing.JOptionPane;
 
-public class Game extends UnicastRemoteObject implements GameInterface{
+
+public class Game extends UnicastRemoteObject implements GameInterface {
 
 
     public Registry registry;
     public GameInterface enemy;
 
-    private GameFrame gameFrame;
+	private GameFrame gameFrame;
+	private ChatFrame chatFrame;
     private Player player;
 
     public boolean player_type;
@@ -32,8 +35,7 @@ public class Game extends UnicastRemoteObject implements GameInterface{
 			System.out.println("Conectando ao servidor");
 			registry = LocateRegistry.getRegistry(port);
 			registry.bind("//"+ip+":"+port+"/Client",this);			
-			System.out.println("Conectado");
-			this.player_type = false;			
+			System.out.println("Conectado");			
 			System.out.println("Cliente Registrado!");
             this.enemy = (GameInterface)registry.lookup("//"+ip+":"+port+"/Server");
             this.player_type = false;		
@@ -47,17 +49,18 @@ public class Game extends UnicastRemoteObject implements GameInterface{
 			try {
 				System.out.println("Não há servidores disponíveis");				
 				System.out.println("Registrando servidor");
-				this.player_type = true;
 				registry = LocateRegistry.createRegistry(port);
 				registry.bind("//"+ip+":"+port+"/Server",this);				
 				System.out.println("Servidor Registrado!");				
 				System.out.println("Aguardando jogador");
 				this.player_type = true;
 			} catch (Exception e2) {
+				JOptionPane.showMessageDialog(null, "" + e.getMessage());
 				e2.printStackTrace();
 			}
 		}
 		catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "" + e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -65,12 +68,13 @@ public class Game extends UnicastRemoteObject implements GameInterface{
 			try {
 				Thread.sleep(30);
 			} catch (InterruptedException e) {
+				JOptionPane.showMessageDialog(null, "" + e.getMessage());
 				e.printStackTrace();
 			}
         }
         
-		gameFrame = new GameFrame(this, player_type);
-		//chatFrame = new ChatFreame(this);
+		gameFrame = new GameFrame(this, this.player_type);
+		chatFrame = new ChatFrame(this, this.player_type);
 
     }
     
@@ -86,9 +90,8 @@ public class Game extends UnicastRemoteObject implements GameInterface{
 	}
 
     @Override
-    public void updateChat(String playerName, String text) throws RemoteException {
-        // TODO Auto-generated method stub
-
+    public void updateChat(String text) throws RemoteException {
+		this.chatFrame.append_message(text);
     }
 
     @Override
@@ -108,6 +111,12 @@ public class Game extends UnicastRemoteObject implements GameInterface{
 	public void updateTurns(int currentTurn) throws RemoteException {
 		this.gameFrame.setJl_currentTurn(currentTurn);
 		this.gameFrame.setCurrentTurn(currentTurn);
+	}
+
+	@Override
+	public void onGameClose() throws RemoteException {
+		this.chatFrame.append_message("<b>Seu oponente deixou o jogo </b><br>");
+		this.gameFrame.dispose();
 	}
 
 }

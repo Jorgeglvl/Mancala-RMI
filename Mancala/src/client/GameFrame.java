@@ -41,6 +41,7 @@ public class GameFrame extends JFrame {
     private JButton restart;
 
     public GameFrame(Game game, boolean player_type) {
+        super("Mancala");
         this.player_type = player_type;
         this.game = game;
 
@@ -98,17 +99,78 @@ public class GameFrame extends JFrame {
     public void refreshButtons(boolean doForEnemy) {
 
         buttonP1.setText(player_board[1] + "");
+        if (player_board[1] == 0) {
+            buttonP1.setEnabled(false);
+        } else{
+            buttonP1.setEnabled(true);
+        }
         buttonP2.setText(player_board[2] + "");
+        if (player_board[2] == 0) {
+            buttonP2.setEnabled(false);
+        } else{
+            buttonP2.setEnabled(true);
+        }
         buttonP3.setText(player_board[3] + "");
+        if (player_board[3] == 0) {
+            buttonP3.setEnabled(false);
+        } else{
+            buttonP3.setEnabled(true);
+        }
         buttonP4.setText(player_board[4] + "");
+        if (player_board[4] == 0) {
+            buttonP4.setEnabled(false);
+        } else{
+            buttonP4.setEnabled(true);
+        }
         buttonP5.setText(player_board[5] + "");
+        if (player_board[5] == 0) {
+            buttonP5.setEnabled(false);
+        } else{
+            buttonP5.setEnabled(true);
+        }
         buttonP6.setText(player_board[6] + "");
+        if (player_board[6] == 0) {
+            buttonP6.setEnabled(false);
+        } else{
+            buttonP6.setEnabled(true);
+        }
         buttonE6.setText(enemy_board[6] + "");
+        if (enemy_board[6] == 0) {
+            buttonE6.setEnabled(false);
+        } else{
+            buttonE6.setEnabled(true);
+        }
         buttonE1.setText(enemy_board[5] + "");
+        if (enemy_board[5] == 0) {
+            buttonE1.setEnabled(false);
+        } else{
+            buttonE1.setEnabled(true);
+        }
+        
         buttonE2.setText(enemy_board[4] + "");
+        if (enemy_board[4] == 0) {
+            buttonE2.setEnabled(false);
+        } else{
+            buttonE2.setEnabled(true);
+        }
         buttonE3.setText(enemy_board[3] + "");
+        if (enemy_board[3] == 0) {
+            buttonE3.setEnabled(false);
+        } else{
+            buttonE3.setEnabled(true);
+        }
         buttonE4.setText(enemy_board[2] + "");
+        if (enemy_board[2] == 0) {
+            buttonE4.setEnabled(false);
+        } else{
+            buttonE4.setEnabled(true);
+        }
         buttonE5.setText(enemy_board[1] + "");
+        if (enemy_board[1] == 0) {
+            buttonE5.setEnabled(false);
+        } else{
+            buttonE5.setEnabled(true);
+        }
 
         player_score.setText(player_board[0] + "");
         enemy_score.setText(enemy_board[0] + "");
@@ -117,7 +179,7 @@ public class GameFrame extends JFrame {
             try {
                 this.game.enemy.updateBoard(this.player_board, this.enemy_board);
             } catch (RemoteException e) {
-                System.out.println(e.getMessage());
+                JOptionPane.showMessageDialog(null, "" + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -155,8 +217,9 @@ public class GameFrame extends JFrame {
             }
 
             @Override
-            public void windowClosing(WindowEvent e) {
-                // Utils.sendMessage(connection, "GAME_CLOSE");
+            public void windowClosing(WindowEvent e) {                
+                onClose();
+                dispose();
             }
 
             @Override
@@ -310,7 +373,7 @@ public class GameFrame extends JFrame {
             try {
                 this.game.enemy.onSurrender(player_type);
             } catch (RemoteException e) {
-                // TODO Auto-generated catch block
+                JOptionPane.showMessageDialog(null, "" + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -322,7 +385,7 @@ public class GameFrame extends JFrame {
             try {
                 this.game.enemy.updateTurns(currentTurn);
             } catch (RemoteException e) {
-                // TODO Auto-generated catch block
+                JOptionPane.showMessageDialog(null, "" + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -511,6 +574,15 @@ public class GameFrame extends JFrame {
         jl_currentTurn.setBounds(365, 301, 332, 36);
         this.getContentPane().add(jl_currentTurn);
 
+    }
+
+    private void onClose(){
+        try {
+            this.game.enemy.onGameClose();
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(null, "" + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void start() {

@@ -76,7 +76,8 @@ public class LoginRMI extends JFrame {
             try {
                 new Player(ip, port);
             } catch (RemoteException e) {
-                // TODO Auto-generated catch block
+                JOptionPane.showMessageDialog(null, "" + e.getMessage());
+                
                 e.printStackTrace();
             }
             this.dispose();

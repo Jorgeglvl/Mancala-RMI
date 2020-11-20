@@ -2,14 +2,12 @@ package client;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.net.Socket;
+import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.*;
 
-import common.Utils;
-
-public class Chat extends JFrame{
+public class ChatFrame extends JFrame {
 
     private JLabel jl_title;
     private JEditorPane messages;
@@ -19,14 +17,19 @@ public class Chat extends JFrame{
     private JScrollPane scroll;
 
     private Game game;
+    private boolean player_type;
     private String title;
-    private Socket connection;
-    private String connection_info;
     private ArrayList<String> message_list;
 
-    public Chat(Game game){
+    public ChatFrame(Game game, boolean player_type) {
         super("Chat Mancala");
         this.game = game;
+        this.player_type = player_type;
+        if (this.player_type) {
+            this.title = "Jogador 1";
+        } else {
+            this.title = "Jogador 2";
+        }
         initComponents();
         configComponents();
         insertComponents();
@@ -35,8 +38,8 @@ public class Chat extends JFrame{
     }
 
     private void initComponents(){
-        message_list = new ArrayList<String>();
-        jl_title = new JLabel(connection_info.split(":")[0], SwingConstants.CENTER);
+        jl_title = new JLabel("Você é o " + this.title, SwingConstants.CENTER);
+        message_list = new ArrayList<String>();        
         messages = new JEditorPane();
         scroll = new JScrollPane(messages);
         jt_message = new JTextField();
@@ -93,7 +96,8 @@ public class Chat extends JFrame{
 
             @Override
             public void windowClosing(WindowEvent e) {
-                //Utils.sendMessage(connection, "GAME_CLOSE");
+                onClose();
+                dispose();
             }
 
             @Override
@@ -141,11 +145,26 @@ public class Chat extends JFrame{
     private void send(){
         if(jt_message.getText().length() > 0){
             SimpleDateFormat df = new SimpleDateFormat("hh:mm:ss");
-            Utils.sendMessage(connection, "MESSAGE;" + "<b>[" + df.format(new Date()) + "] " + this.title + ": </b><i>" + jt_message.getText() + "</i><br>");
+            try {
+                this.game.enemy.updateChat("<b>[" + df.format(new Date()) + "] " + this.title + ": </b><i>" + jt_message.getText() + "</i><br>");
+            } catch (RemoteException e) {
+                JOptionPane.showMessageDialog(null, "" + e.getMessage());
+                e.printStackTrace();
+            }
             append_message("<b>[" + df.format(new Date()) + "] Voce: </b><i>" + jt_message.getText() + "</i><br>");
             jt_message.setText("");
         }
         
+    }
+
+    private void onClose(){
+        SimpleDateFormat df = new SimpleDateFormat("hh:mm:ss");
+        try {
+            this.game.enemy.updateChat("<b>[" + df.format(new Date()) + "] O " + this.title + " <i>deixou o chat.</i></b><br>");
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(null, "" + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void start(){
