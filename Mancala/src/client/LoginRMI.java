@@ -1,21 +1,16 @@
 package client;
 
 import java.rmi.RemoteException;
-import common.*;
-import server.Server;
 
 import java.awt.*;
 import javax.swing.*;
 import java.io.IOException;
-import java.net.Socket;
-import javax.swing.text.AttributeSet.ColorAttribute;
 
 public class LoginRMI extends JFrame {
 
     private JButton jb_login;
     private JLabel jl_user, jl_port, jl_title;
     private JTextField jt_ip, jt_port;
-	private Player player;
 
     public LoginRMI() throws IOException {
         super("login");

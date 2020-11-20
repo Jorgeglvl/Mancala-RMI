@@ -18,18 +18,15 @@ public class Chat extends JFrame{
     private JPanel panel;
     private JScrollPane scroll;
 
-    private Home home;
+    private Game game;
     private String title;
     private Socket connection;
     private String connection_info;
     private ArrayList<String> message_list;
 
-    public Chat(Home home, Socket connection, String connection_info, String title){
-        super("Chat " + title);
-        this.title = title;
-        this.connection_info = connection_info;
-        this.home = home;
-        this.connection = connection;
+    public Chat(Game game){
+        super("Chat Mancala");
+        this.game = game;
         initComponents();
         configComponents();
         insertComponents();
@@ -96,11 +93,7 @@ public class Chat extends JFrame{
 
             @Override
             public void windowClosing(WindowEvent e) {
-                Utils.sendMessage(connection, "GAME_CLOSE");
-                home.getOpened_games().remove(connection_info);
-                home.getConnected_listeners().get(connection_info).setOpened(false);
-                home.getConnected_listeners().get(connection_info).setRunning(false);
-                home.getConnected_listeners().remove(connection_info);
+                //Utils.sendMessage(connection, "GAME_CLOSE");
             }
 
             @Override

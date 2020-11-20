@@ -68,7 +68,7 @@ public class GameFrame extends JFrame {
         planoDeFundo.setBounds(0, 0, 1024, 648);
         planoDeFundo.setIcon(new ImageIcon(getClass().getResource("/Mancala.png")));
 
-        resetBoard();
+        resetBoard(false);
     }
 
     private void insertComponents() {
@@ -76,7 +76,7 @@ public class GameFrame extends JFrame {
 
     }
 
-    private void resetBoard() {
+    private void resetBoard(boolean doForEnemy) {
         for (int i = 1; i < player_board.length; i++) {
             player_board[i] = 4;
             enemy_board[i] = 4;
@@ -84,11 +84,15 @@ public class GameFrame extends JFrame {
         player_board[0] = 0;
         enemy_board[0] = 0;
         this.currentTurn = 1;
-        this.jl_currentTurn.setText("Turno do Player 1");
+        this.jl_currentTurn.setText("Turno do Player 1");        
 
-        refreshButtons(true);
-        refreshTurns();
-        refreshLabels();
+        if (doForEnemy) {
+            refreshTurns(this.currentTurn, true);
+            refreshButtons(true);
+        } else {
+            refreshTurns(this.currentTurn, false);
+            refreshButtons(false);
+        }
     }
 
     public void refreshButtons(boolean doForEnemy) {
@@ -139,8 +143,8 @@ public class GameFrame extends JFrame {
             buttonE5.addActionListener(event -> makeMove(1, this.player_type));
         }
 
-        restart.addActionListener(event -> resetBoard());
-        desistir.addActionListener(event -> onGiveUp(this.player_type));
+        restart.addActionListener(event -> resetBoard(true));
+        desistir.addActionListener(event -> onGiveUp(this.player_type, true));
 
         this.addWindowListener(new WindowListener() {
 
@@ -153,10 +157,6 @@ public class GameFrame extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 // Utils.sendMessage(connection, "GAME_CLOSE");
-                // home.getOpened_games().remove(connection_info);
-                // home.getConnected_listeners().get(connection_info).setOpened(false);
-                // home.getConnected_listeners().get(connection_info).setRunning(false);
-                // home.getConnected_listeners().remove(connection_info);
             }
 
             @Override
@@ -188,7 +188,7 @@ public class GameFrame extends JFrame {
                 // TODO Auto-generated method stub
 
             }
-            
+
         });
 
     }
@@ -213,11 +213,12 @@ public class GameFrame extends JFrame {
                 if (index_aux > -7 && index_aux < 0) {
                     board_aux_2[index_aux + 7]++;
                 } else {
-                    if(index_aux < -6){
+                    if (index_aux < -6) {
                         index_aux += 13;
                     }
                     // verifica captura.
-                    if (i == board_aux_1[index] && board_aux_1[index_aux] == 0 && index_aux != 0 && board_aux_2[7 - index_aux] != 0) {
+                    if (i == board_aux_1[index] && board_aux_1[index_aux] == 0 && index_aux != 0
+                            && board_aux_2[7 - index_aux] != 0) {
                         int soma = 1;
 
                         soma += board_aux_2[7 - index_aux];
@@ -231,13 +232,12 @@ public class GameFrame extends JFrame {
                 }
 
             }
-            //verifica se o jogador terá outro turno:
-            if(!(index == board_aux_1[index])){
-                if(this.currentTurn == 1){
+            // verifica se o jogador terá outro turno:
+            if (!(index == board_aux_1[index])) {
+                if (this.currentTurn == 1) {
                     this.currentTurn = 0;
                     this.jl_currentTurn.setText("Turno do Player 2");
-                } 
-                else if(this.currentTurn == 0){
+                } else if (this.currentTurn == 0) {
                     this.currentTurn = 1;
                     this.jl_currentTurn.setText("Turno do Player 1");
                 }
@@ -273,8 +273,7 @@ public class GameFrame extends JFrame {
             }
 
             refreshButtons(true);
-            refreshLabels();
-            refreshTurns();
+            refreshTurns(this.currentTurn, true);
         }
 
     }
@@ -294,7 +293,7 @@ public class GameFrame extends JFrame {
         return false;
     }
 
-    private void onGiveUp(boolean player_type) {
+    public void onGiveUp(boolean player_type, boolean doForEnemy) {
         if (player_type) {
             this.jl_currentTurn.setText("O Player 1 desistiu...");
         }
@@ -305,19 +304,29 @@ public class GameFrame extends JFrame {
 
         this.currentTurn = -1;
 
-        refreshTurns();
-        refreshLabels();
+        refreshTurns(this.currentTurn, true);
+
+        if (doForEnemy) {
+            try {
+                this.game.enemy.onSurrender(player_type);
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
 
     }
 
-    private void refreshLabels(){
-        //Utils.sendMessage(connection, "GAME_COMMAND_ATT_LABELS;"  + this.jl_currentTurn.getText());
+    private void refreshTurns(int currentTurn, boolean doForEnemy) {
+        if (doForEnemy) {
+            try {
+                this.game.enemy.updateTurns(currentTurn);
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
 
-    }
-
-    private void refreshTurns(){
-        //String turno = Integer.toString(this.currentTurn);
-        //Utils.sendMessage(connection, "GAME_COMMAND_ATT_TURN;"  + turno);
     }
 
     public void setPlayer_board(int[] player_board) {
@@ -332,19 +341,30 @@ public class GameFrame extends JFrame {
         this.currentTurn = currentTurn;
     }
 
-	public JLabel getJl_currentTurn() {
-		return jl_currentTurn;
-	}
+    public JLabel getJl_currentTurn() {
+        return jl_currentTurn;
+    }
 
-	public void setJl_currentTurn(int currentTurn) {
+    public void setJl_currentTurn(int currentTurn) {
         if (currentTurn == 1) {
             this.jl_currentTurn.setText("Vez do player 1");
-        }else if (currentTurn == 0) {
+        } else if (currentTurn == 0) {
             this.jl_currentTurn.setText("Vez do player 2");
-        } else{
+        } else {
             this.jl_currentTurn.setText("Fim do jogo");
+            if (verifyGameOver()) {
+                String message = "";
+                if (player_board[0] > enemy_board[0]) {
+                    message = "Player 1 é o vencedor";
+                } else if (player_board[0] < enemy_board[0]) {
+                    message = "Player 2 é o vencedor";
+                } else {
+                    message = "Empate!";
+                }
+                this.jl_currentTurn.setText(message + "");
+            }            
         }
-		
+
     }
 
     private void initButtons() {

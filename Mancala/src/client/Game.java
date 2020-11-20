@@ -14,8 +14,6 @@ public class Game extends UnicastRemoteObject implements GameInterface{
     public GameInterface enemy;
 
     private GameFrame gameFrame;
-    private int currentTurn;
-
     private Player player;
 
     public boolean player_type;
@@ -71,7 +69,8 @@ public class Game extends UnicastRemoteObject implements GameInterface{
 			}
         }
         
-        gameFrame = new GameFrame(this, player_type);
+		gameFrame = new GameFrame(this, player_type);
+		//chatFrame = new ChatFreame(this);
 
     }
     
@@ -94,19 +93,21 @@ public class Game extends UnicastRemoteObject implements GameInterface{
 
     @Override
     public void updateBoard(int[] player_board, int[] enemy_board) throws RemoteException {
+		this.gameFrame.setPlayer_board(player_board);
+		this.gameFrame.setEnemy_board(enemy_board);
         this.gameFrame.refreshButtons(false);
     }
 
     @Override
-    public void handleSurrender() throws RemoteException {
-        // TODO Auto-generated method stub
+    public void onSurrender(boolean player_type) throws RemoteException {
+        this.gameFrame.onGiveUp(player_type, false);
 
     }
 
-    @Override
-    public void handleRestart() throws RemoteException {
-        // TODO Auto-generated method stub
-
-    }
+	@Override
+	public void updateTurns(int currentTurn) throws RemoteException {
+		this.gameFrame.setJl_currentTurn(currentTurn);
+		this.gameFrame.setCurrentTurn(currentTurn);
+	}
 
 }
