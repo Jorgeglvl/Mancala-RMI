@@ -121,7 +121,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
 
 	@Override
 	public void onGameClose() throws RemoteException {
-		this.chatFrame.append_message("<b>Seu oponente deixou o jogo </b><br>");
+		this.chatFrame.append_message("<b>Seu oponente deixou o jogo... </b><br>");
 		this.gameFrame.dispose();
 	}
 
