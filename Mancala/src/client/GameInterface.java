@@ -2,7 +2,6 @@ package client;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.net.Socket;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -544,7 +543,7 @@ public class GameInterface extends JFrame {
         enemy_score.setText(enemy_board[0] + "");
 
         if (!fromRemote) {
-            this.player.setBoards(this.player_board, this.enemy_board, false); 
+            this.player.setBoards(this.player_board, this.enemy_board, false);
         }
 
     }

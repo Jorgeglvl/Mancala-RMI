@@ -22,7 +22,7 @@ public class Player extends UnicastRemoteObject implements Communication {
 	private Registry registry;
 	private boolean waiting = true;
 	private GameInterface game;
-	//--------------------------------------------//--------------------------------------------//
+
 	private boolean fim = false;
 	private int novamente = 0;
 	private int jogador = 1;
@@ -34,24 +34,18 @@ public class Player extends UnicastRemoteObject implements Communication {
 	public Player(int[] player_board, int[] enemy_board, String ip, int port) throws RemoteException{
 		super();
 
-		createRunnable();
-
 		this.ip = ip;
 		this.port = port;
 
 		try {
-			//win.setMensagemEnviada("Conectando ao servidor");
 			System.out.println("Conectando ao servidor");
 			registry = LocateRegistry.getRegistry(port);
 			registry.bind("//"+ip+":"+port+"/Cliente",this);
-			//win.setMensagemEnviada("Conectado");
 			System.out.println("Conectado");
 			this.player_type = false;
-			//win.setMensagemEnviada("Cliente Registrado!");
-			System.out.println("Cliente Registrado!");
+			System.out.println("Entrando no jogo");
 			enemy = (Communication)registry.lookup("//"+ip+":"+port+"/Servidor");
-			//win.setMensagemEnviada("Jogador "+(jogador1+1)+" conectado");
-			System.out.println("Jogador 1 conectado");
+			System.out.println("Jogador 1 já conectado");
 			System.out.println();
 			enemy.connect();
 			stopWaiting();
@@ -59,17 +53,12 @@ public class Player extends UnicastRemoteObject implements Communication {
 		}
 		catch (ConnectException|AlreadyBoundException e) {
 			try {
-				//win.setMensagemEnviada("Não há servidores disponivel");
-				System.out.println("Não há servidores disponivel");
-				//win.setMensagemEnviada("Registrando servidor");
-				System.out.println("Registrando servidor");
+				System.out.println("Não há servidores disponiveis");
+				System.out.println("Registrando como servidor");
 				this.player_type = true;
 				registry = LocateRegistry.createRegistry(port);
 				registry.bind("//"+ip+":"+port+"/Servidor",this);
-				//win.setMensagemEnviada("Servidor Registrado!");
-				System.out.println("Servidor Registrado!");
-				//win.setMensagemEnviada("Aguardando jogador");
-				System.out.println("Aguardando jogador");
+				System.out.println("Aguardando outro jogador");
 				this.jogador = 0;
 			} catch (Exception e2) {
 				e2.printStackTrace();
@@ -88,19 +77,6 @@ public class Player extends UnicastRemoteObject implements Communication {
 		}
 
 		game = new GameInterface(this,this.player_type);
-	}
-
-	private void createRunnable() {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					//win.getJFrame().setVisible(true);
-					//win.varreBotao();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
 	}
 
 	@Override
@@ -122,13 +98,18 @@ public class Player extends UnicastRemoteObject implements Communication {
 	}
 
 	@Override
-	public void setJogador(int currentTurn, boolean doForEnemy) throws RemoteException {
-		game.setCurrentTurn(currentTurn);
-		game.setJl_currentTurn(currentTurn);
+	public void setJogador(int currentTurn, boolean doForEnemy) throws RemoteException, NotBoundException {
 
-		if (doForEnemy) {
-			enemy.setJogador(jogador, false);
-		}		
+		enemy = (Communication)registry.lookup("//"+ip+":"+port+"/setJogador");
+		
+		System.out.println("Chamou corretamente");
+		
+		// game.setCurrentTurn(currentTurn);
+		// game.setJl_currentTurn(currentTurn);
+
+		// if (doForEnemy) {
+		// 	enemy.setJogador(jogador, false);
+		// }		
 		
 	}
 
@@ -166,8 +147,6 @@ public class Player extends UnicastRemoteObject implements Communication {
 	public void connect() throws MalformedURLException, RemoteException, NotBoundException {
 		
 		enemy = (Communication)registry.lookup("//"+ip+":"+port+"/Cliente");
-
-		//win.setMensagemEnviada("Jogador "+(jogador2+1)+" conectado");
 		System.out.println("Jogador 2 conectado");
 	}
 
