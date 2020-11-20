@@ -1,18 +1,24 @@
-package client;
+package server;
 
 import java.net.MalformedURLException;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-
 import javax.swing.JOptionPane;
+
+import common.*;
+import client.*;
 
 
 public class Game extends UnicastRemoteObject implements GameInterface {
 
 
-    public Registry registry;
+    /**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+	public Registry registry;
     public GameInterface enemy;
 
 	private GameFrame gameFrame;

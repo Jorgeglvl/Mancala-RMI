@@ -6,10 +6,16 @@ import javax.swing.JLabel;
 import java.awt.*;
 import java.awt.event.*;
 import java.rmi.RemoteException;
-
 import javax.swing.*;
 
+import server.*;
+
 public class GameFrame extends JFrame {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
     Game game;
 
@@ -97,6 +103,7 @@ public class GameFrame extends JFrame {
     }
 
     public void refreshButtons(boolean doForEnemy) {
+        //Atualiza os valores dos botões e desabilita os que forem zero: 
 
         buttonP1.setText(player_board[1] + "");
         if (player_board[1] == 0) {

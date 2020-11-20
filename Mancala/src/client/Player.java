@@ -4,8 +4,14 @@ import java.awt.Color;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 
+import server.*;
+
 public class Player implements Serializable {
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
 	private String ip;
 	private int port;
 

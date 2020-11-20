@@ -6,13 +6,17 @@ import java.awt.*;
 import javax.swing.*;
 import java.io.IOException;
 
-public class LoginRMI extends JFrame {
+public class Login extends JFrame {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     private JButton jb_login;
     private JLabel jl_user, jl_port, jl_title;
     private JTextField jt_ip, jt_port;
 
-    public LoginRMI() throws IOException {
+    public Login() throws IOException {
         super("login");
         initComponents();
         configComponents();
@@ -90,7 +94,7 @@ public class LoginRMI extends JFrame {
     }
 
     public static void main(String[] args) throws IOException {
-        LoginRMI login = new LoginRMI();
+        Login login = new Login();
     }
     
 }

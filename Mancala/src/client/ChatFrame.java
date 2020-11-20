@@ -7,8 +7,14 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.*;
 
+import server.*;
+
 public class ChatFrame extends JFrame {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     private JLabel jl_title;
     private JEditorPane messages;
     private JTextField jt_message;
