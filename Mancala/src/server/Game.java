@@ -37,7 +37,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         this.ip = this.player.getIp();
         this.port = this.player.getPort();
 
-        try {			
+        try {
 			System.out.println("Conectando ao servidor");
 			registry = LocateRegistry.getRegistry(port);
 			registry.bind("//"+ip+":"+port+"/Client",this);			
