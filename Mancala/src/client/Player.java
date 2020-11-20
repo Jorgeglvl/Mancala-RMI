@@ -1,22 +1,20 @@
 package client;
 
-import java.awt.EventQueue;
-import java.net.MalformedURLException;
-import java.rmi.AlreadyBoundException;
-import java.rmi.ConnectException;
-import java.rmi.NotBoundException;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.io.Serializable;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import common.Communication;
 
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-public class Player extends UnicastRemoteObject implements Communication {
+public class Player implements Serializable {
 
-    private String ip;
+	private String ip;
 	private int port;
+<<<<<<< HEAD
 	private String mensagemEnv = "";
 	private Communication enemy;
 	private Registry registry;
@@ -111,48 +109,33 @@ public class Player extends UnicastRemoteObject implements Communication {
 		// 	enemy.setJogador(jogador, false);
 		// }		
 		
+=======
+
+	protected Game game;
+	protected Color clientColour;
+
+	public Player(String ip, int port) throws RemoteException {
+		this.ip = ip;
+		this.port = port;
+
+		new Game(this);
+    }
+
+	public String getIp() {
+		return ip;
+>>>>>>> 4c1b92b9263f2d0f1e499b8c4c39976470cca6ba
 	}
 
-	@Override
-	public void desistir(int jogador, boolean doForEnemy) throws RemoteException {
-		// TODO Auto-generated method stub
-
-		if (doForEnemy) {
-			enemy.desistir(jogador, false);
-		}
-
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
-	@Override
-	public void finalizaJogo(boolean doForEnemy) throws RemoteException {
-		// TODO Auto-generated method stub
-
-		if (doForEnemy) {
-			enemy.finalizaJogo(false);
-		}
-
+	public int getPort() {
+		return port;
 	}
 
-	@Override
-	public void notificaSaida(int jogador, boolean doForEnemy) throws RemoteException {
-		// TODO Auto-generated method stub
-
-		if (doForEnemy) {
-			enemy.notificaSaida(jogador, false);
-		}
-
+	public void setPort(int port) {
+		this.port = port;
 	}
-
-	@Override
-	public void connect() throws MalformedURLException, RemoteException, NotBoundException {
-		
-		enemy = (Communication)registry.lookup("//"+ip+":"+port+"/Cliente");
-		System.out.println("Jogador 2 conectado");
-	}
-
-	@Override
-	public void stopWaiting() throws RemoteException {
-		waiting = false;
-	}
-    
+  
 }
