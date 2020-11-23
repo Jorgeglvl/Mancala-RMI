@@ -224,9 +224,10 @@ public class GameFrame extends JFrame {
             }
 
             @Override
-            public void windowClosing(WindowEvent e) {                
+            public void windowClosing(WindowEvent e) {
                 onClose();
                 dispose();
+                System.exit(game.getPort());
             }
 
             @Override
@@ -587,7 +588,6 @@ public class GameFrame extends JFrame {
         try {
             this.game.enemy.onGameClose();
         } catch (RemoteException e) {
-            JOptionPane.showMessageDialog(null, "" + e.getMessage());
             e.printStackTrace();
         }
     }

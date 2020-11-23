@@ -44,7 +44,7 @@ public class ChatFrame extends JFrame {
     }
 
     private void initComponents(){
-        jl_title = new JLabel("VocÃª Ã© o " + this.title, SwingConstants.CENTER);
+        jl_title = new JLabel("Você é o " + this.title, SwingConstants.CENTER);
         message_list = new ArrayList<String>();        
         messages = new JEditorPane();
         scroll = new JScrollPane(messages);
@@ -104,6 +104,7 @@ public class ChatFrame extends JFrame {
             public void windowClosing(WindowEvent e) {
                 onClose();
                 dispose();
+                System.exit(game.getPort());
             }
 
             @Override
@@ -155,9 +156,10 @@ public class ChatFrame extends JFrame {
                 this.game.enemy.updateChat("<b>[" + df.format(new Date()) + "] " + this.title + ": </b><i>" + jt_message.getText() + "</i><br>");
             } catch (RemoteException e) {
                 JOptionPane.showMessageDialog(null, "" + e.getMessage());
+                System.exit(game.getPort());
                 e.printStackTrace();
             }
-            append_message("<b>[" + df.format(new Date()) + "] Voce: </b><i>" + jt_message.getText() + "</i><br>");
+            append_message("<b>[" + df.format(new Date()) + "] Você: </b><i>" + jt_message.getText() + "</i><br>");
             jt_message.setText("");
         }
         
@@ -168,7 +170,6 @@ public class ChatFrame extends JFrame {
         try {
             this.game.enemy.updateChat("<b>[" + df.format(new Date()) + "] O " + this.title + " <i>deixou o chat.</i></b><br>");
         } catch (RemoteException e) {
-            JOptionPane.showMessageDialog(null, "" + e.getMessage());
             e.printStackTrace();
         }
     }

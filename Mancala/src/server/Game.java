@@ -53,16 +53,17 @@ public class Game extends UnicastRemoteObject implements GameInterface {
 		}
 		catch (ConnectException|AlreadyBoundException e) {
 			try {
-				System.out.println("NÃ£o hÃ¡ servidores disponÃ­veis");				
+				System.out.println("Não há servidores disponíveis");	
 				System.out.println("Registrando servidor");
 				registry = LocateRegistry.createRegistry(port);
 				registry.bind("//"+ip+":"+port+"/Server",this);				
-				System.out.println("Servidor Registrado!");				
-				System.out.println("Aguardando jogador");
+				System.out.println("Servidor Registrado!");
+				JOptionPane.showMessageDialog(null, "" + "Aguardando outro jogador");
 				this.player_type = true;
 			} catch (Exception e2) {
-				JOptionPane.showMessageDialog(null, "" + e.getMessage());
+				JOptionPane.showMessageDialog(null, "Problema ao conectar com " + e.getMessage() + ". Verifique se a porta " + port + " está disponível");
 				e2.printStackTrace();
+				System.exit(port);
 			}
 		}
 		catch (Exception e) {
@@ -117,6 +118,14 @@ public class Game extends UnicastRemoteObject implements GameInterface {
 	public void updateTurns(int currentTurn) throws RemoteException {
 		this.gameFrame.setJl_currentTurn(currentTurn);
 		this.gameFrame.setCurrentTurn(currentTurn);
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
 	}
 
 	@Override
